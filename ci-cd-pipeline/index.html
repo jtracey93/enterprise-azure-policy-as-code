@@ -1,0 +1,1746 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://azure.github.io/enterprise-azure-policy-as-code/ci-cd-pipeline/">
+      
+      
+        <link rel="prev" href="../tips/">
+      
+      
+        <link rel="next" href="../github-actions/">
+      
+      <link rel="icon" href="../Images/10316-icon-service-Policy.svg">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
+    
+    
+      
+        <title>CI/CD Pipeline - Enterprise Policy As Code (EPAC)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.26e3688c.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ecc896b0.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cicd-pipeline-and-azure-devops" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Enterprise Policy As Code (EPAC)" class="md-header__button md-logo" aria-label="Enterprise Policy As Code (EPAC)" data-md-component="logo">
+      
+  <img src="../Images/10316-icon-service-Policy.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Enterprise Policy As Code (EPAC)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CI/CD Pipeline
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Azure/enterprise-azure-policy-as-code" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href=".." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../breaking-changes/" class="md-tabs__link">
+      Breaking Changes
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../quick-start/" class="md-tabs__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        CI/CD Integration
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../integrating-with-alz/" class="md-tabs__link">
+      CAF Azure Landing Zones
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../policy-definitions/" class="md-tabs__link">
+        Policy Objects
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../documenting-assignments-and-policy-sets/" class="md-tabs__link">
+      Documenting Policy Objects
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../operational-scripts/" class="md-tabs__link">
+      Operational Scripts
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Enterprise Policy As Code (EPAC)" class="md-nav__button md-logo" aria-label="Enterprise Policy As Code (EPAC)" data-md-component="logo">
+      
+  <img src="../Images/10316-icon-service-Policy.svg" alt="logo">
+
+    </a>
+    Enterprise Policy As Code (EPAC)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Azure/enterprise-azure-policy-as-code" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../breaking-changes/" class="md-nav__link">
+        Breaking Changes
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          Getting Started
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Getting Started
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick-start/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operating-environment/" class="md-nav__link">
+        Operating Environment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+      
+      
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+          PowerShell Scripts (options)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          PowerShell Scripts (options)
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clone-github/" class="md-nav__link">
+        Cloning the Project
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../powershell-module/" class="md-nav__link">
+        PowerShell Module
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../desired-state-strategy/" class="md-nav__link">
+        Desired State Strategy
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../definitions-and-global-settings/" class="md-nav__link">
+        Global Settings and Definitions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extract-existing-policy-resources/" class="md-nav__link">
+        Extracting Existing Policy Resources
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tips/" class="md-nav__link">
+        Tips
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+      
+      
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          CI/CD Integration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          CI/CD Integration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          CI/CD Pipeline
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        CI/CD Pipeline
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simplified-github-flow-for-policy-as-code" class="md-nav__link">
+    Simplified GitHub Flow for Policy as Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-connections-for-devops-cicd" class="md-nav__link">
+    Service connections for DevOps CI/CD
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-tenant-pipeline" class="md-nav__link">
+    Single Tenant Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Single Tenant Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-tenant-stages" class="md-nav__link">
+    Single Tenant Stages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-tenant-service-connections-and-roles" class="md-nav__link">
+    Single Tenant Service Connections and Roles
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-tenant-pipeline" class="md-nav__link">
+    Multi Tenant Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Multi Tenant Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-tenant-stages" class="md-nav__link">
+    Multi Tenant Stages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-tenant-service-connections-and-roles" class="md-nav__link">
+    Multi Tenant Service Connections and Roles
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#role-assignments-for-cicd-spns" class="md-nav__link">
+    Role Assignments for CI/CD SPNs
+  </a>
+  
+    <nav class="md-nav" aria-label="Role Assignments for CI/CD SPNs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ms-graph-permissions" class="md-nav__link">
+    MS Graph permissions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-epac-resource-policy-reader-role" class="md-nav__link">
+    Custom EPAC Resource Policy Reader Role
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-devops-pipeline" class="md-nav__link">
+    Azure DevOps Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Azure DevOps Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-connections" class="md-nav__link">
+    Service Connections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-environments" class="md-nav__link">
+    Deployment Environments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-scripts" class="md-nav__link">
+    Deployment Scripts
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Scripts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-script-parameters" class="md-nav__link">
+    Common Script Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-deploymentplansps1" class="md-nav__link">
+    Build-DeploymentPlans.ps1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-policyplanps1" class="md-nav__link">
+    Deploy-PolicyPlan.ps1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-rolesplanps1" class="md-nav__link">
+    Deploy-RolesPlan.ps1
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consuming-excel-files" class="md-nav__link">
+    Consuming Excel Files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-execution" class="md-nav__link">
+    Pipeline Execution
+  </a>
+  
+    <nav class="md-nav" aria-label="Pipeline Execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#commit-to-a-feature-branch-or-a-manual-pipeline-run" class="md-nav__link">
+    Commit to a feature branch or a manual pipeline run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-request-is-approved-and-branch-merged-into-main" class="md-nav__link">
+    Pull Request is approved and branch merged into main
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-changes" class="md-nav__link">
+    No changes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-actions/" class="md-nav__link">
+        GitHub Actions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrating-with-alz/" class="md-nav__link">
+        CAF Azure Landing Zones
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+          Policy Objects
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Policy Objects
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../policy-definitions/" class="md-nav__link">
+        Policy Definitions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../policy-set-definitions/" class="md-nav__link">
+        Policy Set Definitions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../policy-assignments/" class="md-nav__link">
+        Policy Assignments
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../policy-exemptions/" class="md-nav__link">
+        Policy Exemptions
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documenting-assignments-and-policy-sets/" class="md-nav__link">
+        Documenting Policy Objects
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operational-scripts/" class="md-nav__link">
+        Operational Scripts
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simplified-github-flow-for-policy-as-code" class="md-nav__link">
+    Simplified GitHub Flow for Policy as Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#service-connections-for-devops-cicd" class="md-nav__link">
+    Service connections for DevOps CI/CD
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-tenant-pipeline" class="md-nav__link">
+    Single Tenant Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Single Tenant Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-tenant-stages" class="md-nav__link">
+    Single Tenant Stages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-tenant-service-connections-and-roles" class="md-nav__link">
+    Single Tenant Service Connections and Roles
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multi-tenant-pipeline" class="md-nav__link">
+    Multi Tenant Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Multi Tenant Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-tenant-stages" class="md-nav__link">
+    Multi Tenant Stages
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-tenant-service-connections-and-roles" class="md-nav__link">
+    Multi Tenant Service Connections and Roles
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#role-assignments-for-cicd-spns" class="md-nav__link">
+    Role Assignments for CI/CD SPNs
+  </a>
+  
+    <nav class="md-nav" aria-label="Role Assignments for CI/CD SPNs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ms-graph-permissions" class="md-nav__link">
+    MS Graph permissions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-epac-resource-policy-reader-role" class="md-nav__link">
+    Custom EPAC Resource Policy Reader Role
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#azure-devops-pipeline" class="md-nav__link">
+    Azure DevOps Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Azure DevOps Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#service-connections" class="md-nav__link">
+    Service Connections
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deployment-environments" class="md-nav__link">
+    Deployment Environments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-scripts" class="md-nav__link">
+    Deployment Scripts
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Scripts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-script-parameters" class="md-nav__link">
+    Common Script Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-deploymentplansps1" class="md-nav__link">
+    Build-DeploymentPlans.ps1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-policyplanps1" class="md-nav__link">
+    Deploy-PolicyPlan.ps1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-rolesplanps1" class="md-nav__link">
+    Deploy-RolesPlan.ps1
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consuming-excel-files" class="md-nav__link">
+    Consuming Excel Files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-execution" class="md-nav__link">
+    Pipeline Execution
+  </a>
+  
+    <nav class="md-nav" aria-label="Pipeline Execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#commit-to-a-feature-branch-or-a-manual-pipeline-run" class="md-nav__link">
+    Commit to a feature branch or a manual pipeline run
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-request-is-approved-and-branch-merged-into-main" class="md-nav__link">
+    Pull Request is approved and branch merged into main
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-changes" class="md-nav__link">
+    No changes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="cicd-pipeline-and-azure-devops">CI/CD Pipeline and Azure DevOps</h1>
+<p>This page covers the general CI/CD documentation, as well as, Azure DevOps CI/CD specific items.</p>
+<p>This repository contains starter pipelines</p>
+<ul>
+<li>Azure DevOps</li>
+<li><a href="../github-actions/">GitHub Actions</a>. </li>
+</ul>
+<p>The authors are interested in supporting other deployment pipelines. If you have developed pipelines for other technologies, such as GitLab, Jenkins, etc., please contribute them to the project as additional starter kits.</p>
+<h2 id="simplified-github-flow-for-policy-as-code">Simplified GitHub Flow for Policy as Code</h2>
+<p>The diagram below shows the use of GitHub Flow in Policy as Code. Builds are triggered for Commits, optionally for Pull Requests and for successful main branch merges.</p>
+<p><img alt="image.png" src="../Images/epac-github-flow.png" /></p>
+<h2 id="service-connections-for-devops-cicd">Service connections for DevOps CI/CD</h2>
+<p>Create Service Principals for the pipeline execution and setup your DevOps environment with the necessary service connections. You will need SPNs with specific roles as shown below.</p>
+<ul>
+<li>Single tenant <a href="#single-tenant-service-connections-and-roles">pipeline service connections</a>.</li>
+<li>Multi tenant <a href="#multi-tenant-service-connections-and-roles">pipeline service connections</a>.</li>
+</ul>
+<p>When creating a Service Connection in Azure DevOps you can set up the service connections on a Subscription or a Management Group scope level. If you are using subscriptions to simulate a hierarchy during EPAC development, configure the service connection(s) scope level as <strong>Subscription</strong>. When creating a Service Connections for management groups (any EPAC environments) Deployment and EPAC Role Assignment the service connection scope level is <strong>Management Group</strong>.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Subscription scope level</th>
+<th align="center">Management Group scope level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="image" src="../Images/azdoServiceConnectionSubConf.png" /></td>
+<td align="center"><img alt="image" src="../Images/azdoServiceConnectionMGConf.png" /></td>
+</tr>
+</tbody>
+</table>
+<h2 id="single-tenant-pipeline">Single Tenant Pipeline</h2>
+<h3 id="single-tenant-stages">Single Tenant Stages</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Purpose</th>
+<th>Trigger</th>
+<th>Scripts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>devStage</td>
+<td>Feature branch DEV environment build, deploy and test</td>
+<td>CI, Manual</td>
+<td>Build-DeploymentPlans.ps1 <br> Deploy-PolicyPlan.ps1 <br/> Deploy-RolesPlan.ps1</td>
+</tr>
+<tr>
+<td>tenantPlanFeatureStage</td>
+<td>Feature branch based plan for prod deployment</td>
+<td>CI, Manual</td>
+<td>Build-DeploymentPlans.ps1</td>
+</tr>
+<tr>
+<td>tenantPlanMainStage</td>
+<td>Main branch based plan for prod deployment</td>
+<td>PR Merged, Manual</td>
+<td>Build-DeploymentPlans.ps1</td>
+</tr>
+<tr>
+<td>tenantDeployStage</td>
+<td>Deploy Policies defined by Main branch based plan</td>
+<td>Prod stage approved</td>
+<td>Deploy-PolicyPlan.ps1</td>
+</tr>
+<tr>
+<td>tenantRolesStage</td>
+<td>Assign roles defined by Main branch based plan</td>
+<td>Role stage approved</td>
+<td>Deploy-RolesPlan.ps1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="single-tenant-service-connections-and-roles">Single Tenant Service Connections and Roles</h3>
+<p>Create Service Principals and associated service connections in Azure DevOps or the equivalent in your CI/CD tool. The SPNs require the following roles to adhere to the least privilege principle. If you have a single tenant, remove the last column and rows with connections ending in "-2".</p>
+<table>
+<thead>
+<tr>
+<th align="left">Connection</th>
+<th align="left">Stages</th>
+<th align="left">MG: epac-dev-mg</th>
+<th align="left">MG: Tenant Root</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">sc-pac-dev</td>
+<td align="left">devStage</td>
+<td align="left">Owner <br/> <a href="#ms-graph-permissions">Graph Permissions</a></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">sc-pac-plan</td>
+<td align="left">tenantPlanFeatureStage <br/> tenantPlanMainStage</td>
+<td align="left"></td>
+<td align="left"><a href="#custom-epac-resource-policy-reader-role">EPAC Policy Reader</a> <br/> <a href="#ms-graph-permissions">Graph Permissions</a></td>
+</tr>
+<tr>
+<td align="left">sc-pac-prod</td>
+<td align="left">tenantDeployStage</td>
+<td align="left"></td>
+<td align="left">Policy Contributor</td>
+</tr>
+<tr>
+<td align="left">sc-pac-roles</td>
+<td align="left">tenantRolesStage-1</td>
+<td align="left"></td>
+<td align="left">User Access Administrator</td>
+</tr>
+</tbody>
+</table>
+<h2 id="multi-tenant-pipeline">Multi Tenant Pipeline</h2>
+<h3 id="multi-tenant-stages">Multi Tenant Stages</h3>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Purpose</th>
+<th>Trigger</th>
+<th>Scripts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>devStage</td>
+<td>Feature branch EPAC DEV environment build, deploy and test</td>
+<td>CI, Manual</td>
+<td>Build-DeploymentPlans.ps1 <br> Deploy-PolicyPlan.ps1 <br/> Deploy-RolesPlan.ps1</td>
+</tr>
+<tr>
+<td>tenantPlanFeatureStage-1</td>
+<td>Feature branch based plan for prod deployment (tenant 1)</td>
+<td>CI, Manual</td>
+<td>Build-DeploymentPlans.ps1</td>
+</tr>
+<tr>
+<td>tenantPlanMainStage-1</td>
+<td>Main branch based plan for prod deployment (tenant 1)</td>
+<td>PR Merged, Manual</td>
+<td>Build-DeploymentPlans.ps1</td>
+</tr>
+<tr>
+<td>tenantDeployStage-1</td>
+<td>Deploy Policies defined by Main branch based plan (tenant 1)</td>
+<td>Prod stage approved</td>
+<td>Deploy-PolicyPlan.ps1</td>
+</tr>
+<tr>
+<td>tenantRolesStage-1</td>
+<td>Assign roles defined by Main branch based plan (tenant 1)</td>
+<td>Role stage approved</td>
+<td>Deploy-RolesPlan.ps1</td>
+</tr>
+<tr>
+<td>tenantPlanFeatureStage-2</td>
+<td>Feature branch based plan for prod deployment (tenant 2)</td>
+<td>CI, Manual</td>
+<td>Build-DeploymentPlans.ps1</td>
+</tr>
+<tr>
+<td>tenantPlanMainStage-2</td>
+<td>Main branch based plan for prod deployment (tenant 2)</td>
+<td>PR Merged, Manual</td>
+<td>Build-DeploymentPlans.ps1</td>
+</tr>
+<tr>
+<td>tenantDeployStage-2</td>
+<td>Deploy Policies defined by Main branch based plan (tenant 2)</td>
+<td>Prod stage approved</td>
+<td>Deploy-PolicyPlan.ps1</td>
+</tr>
+<tr>
+<td>tenantRolesStage-2</td>
+<td>Assign roles defined by Main branch based plan (tenant 2)</td>
+<td>Role stage approved</td>
+<td>Deploy-RolesPlan.ps1</td>
+</tr>
+<tr>
+<td>completedFeature</td>
+<td>Empty stage to complete feature branch</td>
+<td>None</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h3 id="multi-tenant-service-connections-and-roles">Multi Tenant Service Connections and Roles</h3>
+<p>Create Service Principals and associated service connections in Azure DevOps or the equivalent in your CI/CD tool. The SPNs require the following roles to adhere to the least privilege principle. If you have a single tenant, remove the last column and rows with connections ending in "-2".</p>
+<table>
+<thead>
+<tr>
+<th align="left">Connection</th>
+<th align="left">Stages</th>
+<th align="left">MG: epac-dev-mg</th>
+<th align="left">MG: Tenant 1 Root</th>
+<th align="left">MG: Tenant 2 Root</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">sc-pac-dev</td>
+<td align="left">devStage</td>
+<td align="left">Owner <br/> <a href="#ms-graph-permissions">Graph Permissions</a></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">sc-pac-plan-1</td>
+<td align="left">tenantPlanFeatureStage-1 <br/> tenantPlanMainStage-1</td>
+<td align="left"></td>
+<td align="left"><a href="#custom-epac-resource-policy-reader-role">EPAC Policy Reader</a> <br/> <a href="#ms-graph-permissions">Graph Permissions</a></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">sc-pac-plan-2</td>
+<td align="left">tenantPlanFeatureStage-2 <br/> tenantPlanMainStage-2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"><a href="#custom-epac-resource-policy-reader-role">EPAC Policy Reader</a> <br/> <a href="#ms-graph-permissions">Graph Permissions</a></td>
+</tr>
+<tr>
+<td align="left">sc-pac-prod-1</td>
+<td align="left">tenantDeployStage-1</td>
+<td align="left"></td>
+<td align="left">Policy Contributor</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">sc-pac-prod-2</td>
+<td align="left">tenantDeployStage-2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">Policy Contributor</td>
+</tr>
+<tr>
+<td align="left">sc-pac-roles-1</td>
+<td align="left">tenantRolesStage-1</td>
+<td align="left"></td>
+<td align="left">User Access Administrator</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">sc-pac-roles-2</td>
+<td align="left">tenantRolesStage-2</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">User Access Administrator</td>
+</tr>
+<tr>
+<td align="left">none</td>
+<td align="left">completedPlanFeatureStage</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="role-assignments-for-cicd-spns">Role Assignments for CI/CD SPNs</h2>
+<p><strong>Breaking change:</strong> For the planning stages, the SPN used must use a simpler reader role definition and have MS Graph permissions.</p>
+<h3 id="ms-graph-permissions">MS Graph permissions</h3>
+<p>EPAC uses <code>Get-AzRoleAssignment</code> to retrieve role assignments. Microsoft has recently changed the internals from using the deprecated AAD API to use MS Graph. MS Graph queries are more complex and improve security. The cmdlet may call the following Microsoft Graph API according to input parameters:</p>
+<ul>
+<li>GET /users/{id}</li>
+<li>GET /servicePrincipals/{id}</li>
+<li>GET /groups/{id}</li>
+<li>GET /directoryObjects/{id}</li>
+<li>POST /directoryObjects/getByIds</li>
+</ul>
+<p>You must assign these MS Graph <code>Application permissions</code> corresponding to the above APIs:</p>
+<ul>
+<li>User.Read.All</li>
+<li>ServicePrincipalEndpoint.Read.All</li>
+<li>Group.Read.All</li>
+<li>Directory.Read.All</li>
+</ul>
+<p>After you configure the Permissions (<code>Add a permission</code>), you must <code>Grant admin consent for ...</code>. The result in Azure AD portal looks like this:</p>
+<p><img alt="image,png" src="../Images/ms-graph-permissions.png" /></p>
+<p>Read the following Microsoft instructions to <a href="https://learn.microsoft.com/en-us/graph/permissions-overview?tabs=http#application-permissions">learn more about MS Graph Application Permissions</a></p>
+<ol>
+<li><a href="https://learn.microsoft.com/en-us/graph/auth-v2-service#1-register-your-app">Register your app</a></li>
+<li><a href="https://learn.microsoft.com/en-us/graph/auth-v2-service#2-configure-permissions-for-microsoft-graph">Configure permissions for Microsoft Graph</a></li>
+<li><a href="https://learn.microsoft.com/en-us/graph/auth-v2-service#3-get-administrator-consent">Get administrator consent</a></li>
+</ol>
+<h3 id="custom-epac-resource-policy-reader-role">Custom EPAC Resource Policy Reader Role</h3>
+<p>EPAC uses a set of Service Principals to execute the Plan phase which do not require as many rights as those that deploy policy assets into Azure. In version 6, we introduced a <strong>breaking change</strong> that leveraged MS Graph API to retrieve information about the current Azure configuration. This both improves performance, and moves us to the replacement technology for the older Azure Graph API. The addition of <strong>Microsoft.Graph/Operations/read</strong> is the change which enables this functionality.</p>
+<p>The list of roles, and their descriptions is available online <a href="https://learn.microsoft.com/en-us/azure/role-based-access-control/resource-provider-operations">here</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;roleName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EPAC Resource Policy Reader&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Provides read access to all Policy resources for the purpose of planning the EPAC deployments.&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;assignableScopes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;/&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;permissions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;actions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="s2">&quot;Microsoft.Authorization/policySetDefinitions/read&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;Microsoft.Authorization/policyAssignments/read&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;Microsoft.Authorization/policyDefinitions/read&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;Microsoft.Authorization/policyExemptions/read&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;Microsoft.PolicyInsights/*&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;Microsoft.Management/register/action&quot;</span>
+<span class="w">                </span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;notActions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">                </span><span class="nt">&quot;dataActions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">                </span><span class="nt">&quot;notDataActions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Operations script <code>New-AzPolicyReaderRole.ps1</code> creates the role assignment with the above settings.</p>
+<h2 id="azure-devops-pipeline">Azure DevOps Pipeline</h2>
+<h3 id="service-connections">Service Connections</h3>
+<p>Service connections give the pipeline the proper permissions to deploy at desired Azure scopes. Refer to the following documentation:  <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&amp;tabs=yaml">https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&amp;tabs=yaml</a>.</p>
+<h3 id="deployment-environments">Deployment Environments</h3>
+<p>Create distinct ADO environment to configure approval gates. Refer to the following documentation:  <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops">https://docs.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops</a></p>
+<h2 id="deployment-scripts">Deployment Scripts</h2>
+<p>While this script intended to be used, they can be run manually to create a semi-automated EPAC solution. This is useful:</p>
+<ul>
+<li>CI/CD environment is not yet available</li>
+<li>Debugging the scripts from Visual Studio Code (or other IDE)</li>
+</ul>
+<p><img alt="image.pmg" src="../Images/epac-deployment-scripts.png" /></p>
+<h3 id="common-script-parameters">Common Script Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pacEnvironmentSelector</code></td>
+<td>Selects the EPAC environment for this plan. If omitted, interactively prompts for the value.</td>
+</tr>
+<tr>
+<td><code>definitionsRootFolder</code></td>
+<td>Definitions folder path. Defaults to environment variable <code>$env:PAC_DEFINITIONS_FOLDER</code> or <code>./Definitions</code>. It must contain file <code>global-settings.jsonc</code>.</td>
+</tr>
+<tr>
+<td><code>interactive</code></td>
+<td>Defaults to <code>$false</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="build-deploymentplansps1">Build-DeploymentPlans.ps1</h3>
+<p>Analyzes changes in Policy definition, Policy Set definition, and Policy Assignment files. It calculates a plan to apply deltas. The deployment scripts are <strong>declarative</strong> and <strong>idempotent</strong>: this means, that regardless how many times they are run, they always push all changes that were implemented in the JSON files to the Azure environment, i.e. if a JSON file is newly created/updated/deleted, the pipeline will create/update/delete the Policy and/or Policy Set and/or Policy Assignments definition in Azure. If there are no changes, the pipeline can be run any number of times, as it won't make any changes to Azure.</p>
+<p>In addition to the <a href="#common-script-parameters">common parameters</a>, these parameters are defined:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>outputFolder</code></td>
+<td>Output folder path for plan files. Defaults to environment variable <code>$env:PAC_OUTPUT_FOLDER</code> or <code>./Output</code>.</td>
+</tr>
+<tr>
+<td><code>devOpsType</code></td>
+<td>If set, outputs variables consumable by conditions in a DevOps pipeline. Default: not set.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="deploy-policyplanps1">Deploy-PolicyPlan.ps1</h3>
+<p>Deploys Policies, Policy Sets, Policy Assignments, and Policy Exemptions at their desired scope based on the plan.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inputFolder</code></td>
+<td>Input folder path for plan files. Defaults to environment variable <code>$env:PAC_INPUT_FOLDER</code>, <code>$env:PAC_OUTPUT_FOLDER</code> or <code>./Output</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="deploy-rolesplanps1">Deploy-RolesPlan.ps1</h3>
+<p>Creates the role assignments for the Managed Identities required for <code>DeployIfNotExists</code> and <code>Modify</code> Policies.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inputFolder</code></td>
+<td>Input folder path for plan files. Defaults to environment variable <code>$env:PAC_INPUT_FOLDER</code>, <code>$env:PAC_OUTPUT_FOLDER</code> or <code>./Output</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="consuming-excel-files">Consuming Excel Files</h2>
+<p>This functionality is no longer integrated in EPAC. <code>Convert-XlsToCSV.ps1</code> has been removed from the repo.</p>
+<h2 id="pipeline-execution">Pipeline Execution</h2>
+<p>In Azure Devops pipelines the following happens. Your CI/CD tools will display progress differently.</p>
+<h3 id="commit-to-a-feature-branch-or-a-manual-pipeline-run"><code>Commit</code> to a feature branch or a manual pipeline run</h3>
+<ul>
+<li>Stage devStage to deploy Policies, Policy Sets and Policy Assignments to the PAC DEV environment.</li>
+<li>Calculates the plan for PROD environment deployment based on the Feature branch.</li>
+<li>This plan is never executed. Instead the logs and if desired the artifact generated are used by the developer to verify the definition files and to determine if the code is ready for a Pull Request.</li>
+<li>The PR approver(s) will use the same input plus the source code changes to decide the PR approval or rejection.</li>
+</ul>
+<p><img alt="image.png" src="../Images/feature-run.png" /></p>
+<p>Detail view:</p>
+<p><img alt="image.png" src="../Images/feature-run-details.png" /></p>
+<h3 id="pull-request-is-approved-and-branch-merged-into-main"><code>Pull Request</code> is approved and branch merged into main</h3>
+<ul>
+<li>Calculates the plan for PROD environment deployment based on the merged Main branch.</li>
+<li>The pipeline stops for PROD gate(s) approval at this time.</li>
+<li>The logs and if desired the artifacts generated are used by the PROD gate(s) approver(s) to decide on the PROD stage approval(s) or rejection(s).</li>
+<li><img alt="image.png" src="../Images/prod-approval.png" /></li>
+<li><img alt="image.png" src="../Images/prod-approval-dialog.png" /></li>
+<li>After the approval deployments to PROD will begin.</li>
+<li>Optional a second approval before role assignments is required.</li>
+<li><img alt="image.png" src="../Images/prod-complete.png" /></li>
+<li>After the ntire run the overview page looks like this:</li>
+<li><img alt="image.png" src="../Images/pipeline-runs.png" /></li>
+</ul>
+<h3 id="no-changes">No changes</h3>
+<ul>
+<li>Deployment steps and stages are skipped. Skipped stages do not need approvals.</li>
+<li><img alt="image.png" src="../Images/prod-no-changes.png" /></li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.indexes", {"navigation.sections": {"level": 1}}, "navigation.tabs", "navigation.tabs.sticky", "content.code.annotate", "content.tabs.link", "content.code.copy"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.b425cdc4.min.js"></script>
+      
+    
+  </body>
+</html>
